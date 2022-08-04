@@ -1,6 +1,10 @@
+## Git Clone
+git clone https://github.com/insidentil-id/agent-manager.git <br>
+cd agent-manager <br>
+cp .env.example .env <br>
+
 ## Docker Compose Up
 docker compose up -d <br>
-cp .env.example .env
 
 ## Generate Password ELK
 docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic <br>
