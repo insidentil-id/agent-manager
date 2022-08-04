@@ -7,9 +7,14 @@ cp .env.example .env <br>
 docker compose up -d <br>
 
 ## Generate Password ELK
+### 1) Change Elastic Password
 docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user elastic <br>
+### 2) Change Logstash Password
 docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal <br>
+### 3) Change Kibana Password
 docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system <br>
 
-Save result to .env file
-
+Save result to .env file<br>
+ELASTIC_PASSWORD='Result Output 1) Change Elastic Password'<br>
+LOGSTASH_INTERNAL_PASSWORD='Result Output 2) Change Logstash Password'<br>
+KIBANA_SYSTEM_PASSWORD='Result Output 3) Change Kibana Password'<br>
