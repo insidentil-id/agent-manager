@@ -17,4 +17,9 @@ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --use
 Save result to .env file<br>
 ELASTIC_PASSWORD='Result Output 1) Change Elastic Password'<br>
 LOGSTASH_INTERNAL_PASSWORD='Result Output 2) Change Logstash Password'<br>
-KIBANA_SYSTEM_PASSWORD='Result Output 3) Change Kibana Password'<br>
+KIBANA_SYSTEM_PASSWORD='Result Output 3) Change Kibana Password'<br><br>
+
+Example:<br>
+ELASTIC_PASSWORD='jfsjgjrsiuu3pr3'<br>
+LOGSTASH_INTERNAL_PASSWORD='98t3jajfafaiuf9'<br>
+KIBANA_SYSTEM_PASSWORD='jaffawufa8afek'<br>
