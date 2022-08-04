@@ -11,5 +11,5 @@ docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --use
 docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user logstash_internal <br>
 docker-compose exec elasticsearch bin/elasticsearch-reset-password --batch --user kibana_system <br>
 
-Save result to .env
+Save result to .env file
 

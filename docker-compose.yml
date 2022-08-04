@@ -29,7 +29,8 @@ services:
         ELASTIC_VERSION: ${ELASTIC_VERSION}
     volumes:
       - ./docker-elk/elasticsearch/config/elasticsearch.yml:/usr/share/elasticsearch/config/elasticsearch.yml:ro,z
-      - elasticsearch:/usr/share/elasticsearch/data:z
+      - ./data/elasticsearch:/usr/share/elasticsearch/data:z
+      
     ports:
       - "9200:9200"
       - "9300:9300"
@@ -123,6 +124,3 @@ networks:
   elk:
     driver: bridge
 
-volumes:
-  setup:
-  elasticsearch:
