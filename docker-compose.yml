@@ -93,7 +93,7 @@ services:
       ZOOKEEPER_CLIENT_PORT: 2181
       ZOOKEEPER_TICK_TIME: 2000
     networks:
-      - gcp
+      - elk
 
   broker:
     image: confluentinc/cp-kafka:7.0.1
@@ -117,7 +117,7 @@ services:
       KAFKA_JMX_PORT: 9101
       KAFKA_JMX_HOSTNAME: localhost
     networks:
-      - gcp
+      - elk
 
   schema-registry:
     image: confluentinc/cp-schema-registry:7.0.1
@@ -132,7 +132,7 @@ services:
       SCHEMA_REGISTRY_KAFKASTORE_BOOTSTRAP_SERVERS: 'broker:29092'
       SCHEMA_REGISTRY_LISTENERS: http://0.0.0.0:8081
     networks:
-      - gcp
+      - elk
 
   connect:
     image: ryuk4/cp-kafka-connect:6.2.2
@@ -170,7 +170,7 @@ services:
       CONNECT_PLUGIN_PATH: "/usr/share/java,/usr/share/confluent-hub-components"
       CONNECT_LOG4J_LOGGERS: org.apache.zookeeper=ERROR,org.I0Itec.zkclient=ERROR,org.reflections=ERROR
     networks:
-      - gcp
+      - elk
 
   control-center:
     image: provectuslabs/kafka-ui
@@ -191,7 +191,7 @@ services:
       KAFKA_CLUSTERS_0_KAFKACONNECT_0_NAME: ${KAFKA_UI_CLUSTER_CONNECT}
       KAFKA_CLUSTERS_0_KAFKACONNECT_0_ADDRESS: 'http://connect:8083'
     networks:
-      - gcp
+      - elk
     
 networks:
   elk:
