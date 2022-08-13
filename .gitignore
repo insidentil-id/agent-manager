@@ -2,3 +2,4 @@
 data/elasticsearch/_state/*
 data/elasticsearch/indices/*
 data/elasticsearch/snapshot_cache/*
+data/elasticsearch/about.md
