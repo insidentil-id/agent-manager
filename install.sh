@@ -70,16 +70,10 @@ install_elasticsearch(){
     echo "---install Elasticsearch---"
     wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
     sudo dpkg -i elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
-    # sudo cp conf/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
-    # start service
-    #sudo systemctl start elasticsearch
-    # enable service
-    #sudo systemctl enable elasticsearch
     sudo systemctl daemon-reload
     sudo systemctl enable elasticsearch.service
     sudo systemctl start elasticsearch.service
     sudo ufw allow from any to any port 9200
-    # test connection
     sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic > password-elasticsearch.txt
     sudo chmod 777 password-elasticsearch.txt
     echo "[Step 6] Install Elasticsearch Complete"
@@ -127,6 +121,7 @@ main(){
     install_elasticsearch
     install_kibana
     login_kibana
+    echo "[-] Selesai Menginstall Agent-Manager"
 }
 
 main
