@@ -70,7 +70,7 @@ install_elasticsearch(){
     echo "---install Elasticsearch---"
     wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
     sudo dpkg -i elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
-    sudo cp conf/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
+    # sudo cp conf/elasticsearch.yml /etc/elasticsearch/elasticsearch.yml
     # start service
     #sudo systemctl start elasticsearch
     # enable service
