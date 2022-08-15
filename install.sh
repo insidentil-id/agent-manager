@@ -1,4 +1,9 @@
 #!/bin/bash
+# Script By Cyber Threat Hunting Team
+# Direktorat Operasi Keamanan Siber
+# Badan Siber dan Sandi Negara
+# Tahun 2022
+# Special Thanks to Team: maNDayUGIikHSanNaLonAldAvIDSUBkHAnREndRAalSItAdAFi
 
 check_root() {
 	echo "---Mengecek Sistem Root---"
@@ -90,8 +95,8 @@ install_kibana(){
     sudo systemctl start kibana.service
     sudo cp conf/kibana.yml /etc/kibana/kibana.yml
     sudo ufw allow from any to any port 5601
-    sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana > password-kibana.txt
-    sudo chmod 777 password-kibana.txt
+    # sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana > password-kibana.txt
+    # sudo chmod 777 password-kibana.txt
     echo "[Step 7] Install Kibana Complete"
     echo ""
 	echo ""
@@ -100,16 +105,19 @@ install_kibana(){
 login_kibana(){
     echo "---Login Kibana---"
     read -p "Buka halaman localhost:5601 (Press Anything To Continued)"
-    echo "Masukkan Token Registrasi Berikut Pada Enroll Token (Press Anything To Continued)"
-    sudo cat password-kibana.txt
-    read -p "Masukkan Kode Verifikasi Berikut (Press Anything To Continued)"
+    echo "Masukkan Token Registrasi Berikut Pada Enroll Token"
+    sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
+    read -p "Press Anything To Continued...."
+    echo "Masukkan Kode Verifikasi Berikut"
     sudo /usr/share/kibana/bin/kibana-verification-code
+    read -p "Press Anything To Continued...."
     echo "Login dengan menggunakan username elastic dan password elastic berikut:"
     tail -3 password-elasticsearch.txt
-    read -p "(Press Anything To Continued)"
+    read -p "Press Anything To Continued...."
     echo "[Step 8] Konfigurasi Kibana Complete"
     echo ""
 	echo ""
+    echo "[-] Selesai Menginstall Agent-Manager"
 }
 
 main(){
@@ -121,7 +129,6 @@ main(){
     install_elasticsearch
     install_kibana
     login_kibana
-    echo "[-] Selesai Menginstall Agent-Manager"
 }
 
 main
