@@ -18,6 +18,12 @@ check_root() {
 	echo ""
 }
 
+check_openport(){
+    sudo apt install nmap
+}
+
+
+
 check_os(){
     echo "---Mengecek Operating System---"
     # Installing ELK Stack
@@ -95,6 +101,7 @@ install_kibana(){
     sudo systemctl start kibana.service
     sudo cp conf/kibana.yml /etc/kibana/kibana.yml
     sudo ufw allow from any to any port 5601
+    sudo ufw allow from any to any port 8220 #Fleet Port
     # sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana > password-kibana.txt
     # sudo chmod 777 password-kibana.txt
     echo "[Step 7] Install Kibana Complete"
@@ -119,6 +126,12 @@ login_kibana(){
 	echo ""
     echo "[-] Selesai Menginstall Agent-Manager"
 }
+
+install_fleet(){
+    echo "---Install Fleet Server---"
+    sudo ./elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 ../agent-manager/password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca=/usr/local/etc/elastic/elasticsearch-ca.pem
+}
+
 
 main(){
     check_root
