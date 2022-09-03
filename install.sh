@@ -69,7 +69,7 @@ install_fw_nginx() {
     echo "---install firewall and nginx---"
     sudo apt install ufw nginx -y
     sudo ufw allow 22/tcp
-    sudo ufw enable
+    yes | sudo ufw enable
     sudo systemctl enable nginx
     sudo systemctl start nginx
     echo "[Step 5] Install firewall and nginx Complete"
