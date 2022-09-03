@@ -101,7 +101,8 @@ install_kibana(){
     sudo systemctl start kibana.service
     sudo cp conf/kibana.yml /etc/kibana/kibana.yml
     sudo ufw allow from any to any port 5601
-    sudo ufw allow from any to any port 8220 #Fleet Port
+    #Fleet Port
+    sudo ufw allow from any to any port 8220
     # sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana > password-kibana.txt
     # sudo chmod 777 password-kibana.txt
     echo "[Step 7] Install Kibana Complete"
