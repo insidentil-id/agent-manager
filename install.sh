@@ -67,7 +67,7 @@ check_java() {
 
 install_fw_nginx() {
     echo "---install firewall and nginx---"
-    sudo apt install ufw nginx
+    sudo apt install ufw nginx -y
     sudo ufw allow 22/tcp
     sudo ufw enable
     sudo systemctl enable nginx
@@ -80,7 +80,7 @@ install_fw_nginx() {
 install_elasticsearch(){
     echo "---install Elasticsearch---"
     wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
-    sudo dpkg -i elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
+    yes | sudo dpkg -i elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
     sudo systemctl daemon-reload
     sudo systemctl enable elasticsearch.service
     sudo systemctl start elasticsearch.service
@@ -95,7 +95,7 @@ install_elasticsearch(){
 install_kibana(){
     echo "---install Kibana---"
     wget https://artifacts.elastic.co/downloads/kibana/kibana-${ELASTICSEARCH_VERSION}-amd64.deb
-    sudo dpkg -i kibana-${ELASTICSEARCH_VERSION}-amd64.deb
+    yes | sudo dpkg -i kibana-${ELASTICSEARCH_VERSION}-amd64.deb
     sudo systemctl daemon-reload
     sudo systemctl enable kibana.service
     sudo systemctl start kibana.service
