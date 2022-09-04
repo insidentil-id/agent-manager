@@ -121,6 +121,7 @@ login_kibana(){
     echo "Restart Kibana (Please Wait)"
     sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
     sudo systemctl restart kibana.service
+    read -p "Buka halaman http://$(hostname -I):5601 (Press Anything To Continued)"
     echo "Login dengan menggunakan username elastic dan password elastic berikut:"
     tail -3 password-elasticsearch.txt
     read -p "Press Anything To Continued...."
