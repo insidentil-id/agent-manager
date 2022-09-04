@@ -84,7 +84,7 @@ install_elasticsearch(){
     sudo systemctl daemon-reload
     sudo systemctl enable elasticsearch.service
     sudo systemctl start elasticsearch.service
-    sudo ufw allow from any to any port 9200
+    yes | sudo ufw allow from any to any port 9200
     sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic > password-elasticsearch.txt
     sudo chmod 777 password-elasticsearch.txt
     echo "[Step 6] Install Elasticsearch Complete"
@@ -100,9 +100,9 @@ install_kibana(){
     sudo systemctl enable kibana.service
     sudo systemctl start kibana.service
     sudo cp conf/kibana.yml /etc/kibana/kibana.yml
-    sudo ufw allow from any to any port 5601
+    yes | sudo ufw allow from any to any port 5601
     #Fleet Port
-    sudo ufw allow from any to any port 8220
+    yes | sudo ufw allow from any to any port 8220
     # sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana > password-kibana.txt
     # sudo chmod 777 password-kibana.txt
     echo "[Step 7] Install Kibana Complete"
