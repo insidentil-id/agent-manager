@@ -100,9 +100,6 @@ install_kibana(){
     sudo systemctl enable kibana.service
     sudo systemctl start kibana.service
     sudo cp conf/kibana.yml /etc/kibana/kibana.yml
-    #Add Encryption Key To Kibana
-    sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
-    sudo systemctl restart kibana.service
     sudo ufw allow from any to any port 5601
     #Fleet Port
     sudo ufw allow from any to any port 8220
@@ -120,6 +117,10 @@ login_kibana(){
     echo "Masukkan Kode Verifikasi Berikut"
     sudo /usr/share/kibana/bin/kibana-verification-code
     read -p "Press Anything To Continued...."
+    #Add Encryption Key To Kibana
+    echo "Restart Kibana (Please Wait)"
+    sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
+    sudo systemctl restart kibana.service
     echo "Login dengan menggunakan username elastic dan password elastic berikut:"
     tail -3 password-elasticsearch.txt
     read -p "Press Anything To Continued...."
