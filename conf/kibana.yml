@@ -180,6 +180,8 @@ xpack.fleet.packages:
     version: latest
   - name: fleet_server
     version: latest
+  - name: endpoint
+    version: latest
 xpack.fleet.agentPolicies:
   - name: CA Security Endpoint
     id: ca-security-endpoint
@@ -196,7 +198,11 @@ xpack.fleet.agentPolicies:
         id: ca-fleet
         package:
           name: fleet_server
-      - name: CA Endpoint Security
-        id: ca-endpoint
+      - name: CA Agent
+        id: ca-egent
         package:
            name: elastic_agent
+      - name: CA Endpoint
+        id: ca-endpoint
+        package:
+           name: endpoint

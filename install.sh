@@ -143,9 +143,23 @@ install_fleet(){
     echo "Klik Save and Continued"
     read -p "Press Anything To Continued...."
     echo "[Step 9] Install Fleet Server Complete"
-    echo ""
-	echo ""
-    echo "[-] Selesai Menginstall Agent-Manager dan Endpoint Security"
+}
+
+setting_download_page(){
+    echo "---Setting Download Page---"
+    sudo apt-get install php8.1-fpm -y
+    sudo cp conf/default /etc/nginx/sites-available/default
+    sudo systemctl restart nginx
+    sudo chmod -R 777 /var/www/html
+    read -p "Masukkan Alamat IP (tanpa https:// dan tanpa port) : " IP_ADDRESS_ES
+    read -p "Buka halaman http://$(hostname -I):5601/app/fleet/enrollment-tokens (Press Anything To Continued)"
+    read -p "Copy Secret Enrollments Token dari Agent Policy CA Security Endpoint (Press Anything To Continued)"
+    read -p "Masukkan Secret Enrollments Token : " ENROLLMENT_TOKEN
+    sed -i "s/IP_ADDRESS/$IP_ADDRESS_ES/g" conf/download
+    sed -i "s/TOKEN_INPUT/$ENROLLMENT_TOKEN/g" conf/download
+    cp conf/download /var/www/html/download.php
+    echo "Berhasil membuat download page agent endpoint kunjungi http://$IP_ADDRESS_ES/download"
+    echo "[Step 10] Agent Endpoint Download Page Complete"
 }
 
 main(){
@@ -158,6 +172,10 @@ main(){
     install_kibana
     login_kibana
     install_fleet
+    setting_download_page
+    echo ""
+	echo ""
+    echo "[-] Selesai Menginstall Agent-Manager dan Endpoint Security"
 }
 
 main
