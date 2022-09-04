@@ -22,8 +22,6 @@ check_openport(){
     sudo apt install nmap
 }
 
-
-
 check_os(){
     echo "---Mengecek Operating System---"
     # Installing ELK Stack
@@ -85,7 +83,7 @@ install_elasticsearch(){
     sudo systemctl enable elasticsearch.service
     sudo systemctl start elasticsearch.service
     sudo ufw allow from any to any port 9200
-    yes | sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic > password-elasticsearch.txt
+    yes | sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic | tail -1 > password-elasticsearch.txt
     sudo chmod 777 password-elasticsearch.txt
     echo ""
     echo "[Step 6] Install Elasticsearch Complete"
@@ -101,6 +99,9 @@ install_kibana(){
     sudo systemctl enable kibana.service
     sudo systemctl start kibana.service
     sudo cp conf/kibana.yml /etc/kibana/kibana.yml
+    #Add Encryption Key To Kibana
+    sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
+    sudo systemctl restart kibana.service
     sudo ufw allow from any to any port 5601
     #Fleet Port
     sudo ufw allow from any to any port 8220
@@ -111,9 +112,19 @@ install_kibana(){
 	echo ""
 }
 
+install_fleet(){
+    echo "---Install Fleet Server---"
+    sudo apt-get install jq
+    curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.3.3-linux-x86_64.tar.gz
+    tar xzvf elastic-agent-8.3.3-linux-x86_64.tar.gz
+    cd elastic-agent-8.3.3-linux-x86_64
+    yes | sudo ./elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 ../password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
+    echo "[Step 8] Install Fleet Server Complete"
+}
+
 login_kibana(){
     echo "---Login Kibana---"
-    read -p "Buka halaman localhost:5601 (Press Anything To Continued)"
+    read -p "Buka halaman $(hostname -I):5601 (Press Anything To Continued)"
     echo "Masukkan Token Registrasi Berikut Pada Enroll Token"
     sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
     read -p "Press Anything To Continued...."
@@ -123,21 +134,16 @@ login_kibana(){
     echo "Login dengan menggunakan username elastic dan password elastic berikut:"
     tail -3 password-elasticsearch.txt
     read -p "Press Anything To Continued...."
-    echo "[Step 8] Konfigurasi Kibana Complete"
+    read -p "Buka halaman $(hostname -I):5601/app/fleet/integrations/endpoint/add-integration (Press Anything To Continued)"
+    echo "Masukkan Integration Name : Compromise Assessment"
+    echo "Klik Tab Existing hosts (Pastikan Opsi yang dipilih pada Agent Policy adalah CA Security Endpoint)"
+    echo "Klik Save and Continued"
+    read -p "Press Anything To Continued...."
+    echo "[Step 9] Konfigurasi Kibana and Elastic Agent Complete"
     echo ""
 	echo ""
     echo "[-] Selesai Menginstall Agent-Manager"
 }
-
-install_fleet(){
-    echo "---Install Fleet Server---"
-    sudo apt-get install jq
-    curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.3.3-linux-x86_64.tar.gz
-    tar xzvf elastic-agent-8.3.3-linux-x86_64.tar.gz
-    cd elastic-agent-8.3.3-linux-x86_64
-    yes | sudo ./elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 ../password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
-}
-
 
 main(){
     check_root
