@@ -124,7 +124,7 @@ install_fleet(){
 
 login_kibana(){
     echo "---Login Kibana---"
-    read -p "Buka halaman $(hostname -I):5601 (Press Anything To Continued)"
+    read -p "Buka halaman http://$(hostname -I):5601 (Press Anything To Continued)"
     echo "Masukkan Token Registrasi Berikut Pada Enroll Token"
     sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana
     read -p "Press Anything To Continued...."
@@ -134,7 +134,7 @@ login_kibana(){
     echo "Login dengan menggunakan username elastic dan password elastic berikut:"
     tail -3 password-elasticsearch.txt
     read -p "Press Anything To Continued...."
-    read -p "Buka halaman $(hostname -I):5601/app/fleet/integrations/endpoint/add-integration (Press Anything To Continued)"
+    read -p "Buka halaman http://$(hostname -I):5601/app/fleet/integrations/endpoint/add-integration (Press Anything To Continued)"
     echo "Masukkan Integration Name : Compromise Assessment"
     echo "Klik Tab Existing hosts (Pastikan Opsi yang dipilih pada Agent Policy adalah CA Security Endpoint)"
     echo "Klik Save and Continued"
