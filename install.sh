@@ -125,10 +125,11 @@ login_kibana(){
 
 install_fleet(){
     echo "---Install Fleet Server---"
-    read -p "Press Anything To Continued...."
+    read -p "Generate Encryption Key To Kibana (Press Anything To Continued)...."
     #Add Encryption Key To Kibana
     sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
     sudo systemctl restart kibana.service
+    read -p "Install Fleet Server...."
     yes | sudo apt-get install jq
     curl -L -O assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
     tar xzvf assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
