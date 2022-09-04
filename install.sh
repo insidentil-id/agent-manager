@@ -137,6 +137,7 @@ install_fleet(){
     tar xzvf assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz -C assets
     yes | sudo ./assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64/elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
     read -p "Buka halaman http://$(hostname -I):5601/app/fleet/integrations/endpoint/add-integration (Press Anything To Continued)"
+    echo ""
     echo "Masukkan Integration Name : Compromise Assessment"
     echo "Klik Tab Existing hosts (Pastikan Opsi yang dipilih pada Agent Policy adalah CA Security Endpoint)"
     echo "Klik Save and Continued"
