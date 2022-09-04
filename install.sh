@@ -100,6 +100,9 @@ install_kibana(){
     sudo systemctl enable kibana.service
     sudo systemctl start kibana.service
     sudo cp conf/kibana.yml /etc/kibana/kibana.yml
+    #Add Encryption Key To Kibana
+    sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
+    sudo systemctl restart kibana.service
     sudo ufw allow from any to any port 5601
     #Fleet Port
     sudo ufw allow from any to any port 8220
@@ -125,14 +128,11 @@ login_kibana(){
 
 install_fleet(){
     echo "---Install Fleet Server---"
-    read -p "Generate Encryption Key To Kibana (Press Anything To Continued)...."
-    #Add Encryption Key To Kibana
-    sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
-    sudo systemctl restart kibana.service
+    # read -p "Generate Encryption Key To Kibana (Press Anything To Continued)...."
     read -p "Install Fleet Server...."
     yes | sudo apt-get install jq
-    curl -L -O assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
-    tar xzvf assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
+    wget -O assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
+    tar xzvf assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz -C assets
     yes | sudo ./assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64/elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
     read -p "Buka halaman http://$(hostname -I):5601/app/fleet/integrations/endpoint/add-integration (Press Anything To Continued)"
     echo "Masukkan Integration Name : Compromise Assessment"
