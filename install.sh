@@ -131,7 +131,11 @@ login_kibana(){
 
 install_fleet(){
     echo "---Install Fleet Server---"
-    sudo ./elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 ../agent-manager/password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca=/usr/local/etc/elastic/elasticsearch-ca.pem
+    sudo apt-get install jq
+    curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.3.3-linux-x86_64.tar.gz
+    tar xzvf elastic-agent-8.3.3-linux-x86_64.tar.gz
+    cd elastic-agent-8.3.3-linux-x86_64
+    yes | sudo ./elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 ../password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
 }
 
 
@@ -143,6 +147,7 @@ main(){
     install_fw_nginx
     install_elasticsearch
     install_kibana
+    install_fleet
     login_kibana
 }
 
