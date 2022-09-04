@@ -40,6 +40,7 @@ check_os(){
 check_update() {
     echo "---Mengecek Update dan Variabel---"
 	sudo apt update
+    mkdir assets
 	export $(cat .env | xargs)
     echo "[Step 3] Checking Update and Variable Complete"
     echo ""
@@ -77,8 +78,8 @@ install_fw_nginx() {
 
 install_elasticsearch(){
     echo "---install Elasticsearch---"
-    wget https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
-    yes | sudo dpkg -i elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
+    wget -O assets/elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb https://artifacts.elastic.co/downloads/elasticsearch/elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
+    yes | sudo dpkg -i assets/elasticsearch-${ELASTICSEARCH_VERSION}-amd64.deb
     sudo systemctl daemon-reload
     sudo systemctl enable elasticsearch.service
     sudo systemctl start elasticsearch.service
@@ -93,8 +94,8 @@ install_elasticsearch(){
 
 install_kibana(){
     echo "---install Kibana---"
-    wget https://artifacts.elastic.co/downloads/kibana/kibana-${ELASTICSEARCH_VERSION}-amd64.deb
-    yes | sudo dpkg -i kibana-${ELASTICSEARCH_VERSION}-amd64.deb
+    wget -O assets/kibana-${ELASTICSEARCH_VERSION}-amd64.deb https://artifacts.elastic.co/downloads/kibana/kibana-${ELASTICSEARCH_VERSION}-amd64.deb
+    yes | sudo dpkg -i assets/kibana-${ELASTICSEARCH_VERSION}-amd64.deb
     sudo systemctl daemon-reload
     sudo systemctl enable kibana.service
     sudo systemctl start kibana.service
@@ -102,8 +103,6 @@ install_kibana(){
     sudo ufw allow from any to any port 5601
     #Fleet Port
     sudo ufw allow from any to any port 8220
-    # sudo /usr/share/elasticsearch/bin/elasticsearch-create-enrollment-token -s kibana > password-kibana.txt
-    # sudo chmod 777 password-kibana.txt
     echo "[Step 7] Install Kibana Complete"
     echo ""
 	echo ""
@@ -126,15 +125,14 @@ login_kibana(){
 
 install_fleet(){
     echo "---Install Fleet Server---"
+    read -p "Press Anything To Continued...."
     #Add Encryption Key To Kibana
     sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
     sudo systemctl restart kibana.service
     yes | sudo apt-get install jq
-    curl -L -O https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-8.3.3-linux-x86_64.tar.gz
-    tar xzvf elastic-agent-8.3.3-linux-x86_64.tar.gz
-    cd elastic-agent-8.3.3-linux-x86_64
-    yes | sudo ./elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 ../password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
-    cd ..
+    curl -L -O assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
+    tar xzvf assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
+    yes | sudo ./assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64/elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
     read -p "Buka halaman http://$(hostname -I):5601/app/fleet/integrations/endpoint/add-integration (Press Anything To Continued)"
     echo "Masukkan Integration Name : Compromise Assessment"
     echo "Klik Tab Existing hosts (Pastikan Opsi yang dipilih pada Agent Policy adalah CA Security Endpoint)"
