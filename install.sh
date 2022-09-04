@@ -87,6 +87,7 @@ install_elasticsearch(){
     sudo ufw allow from any to any port 9200
     yes | sudo /usr/share/elasticsearch/bin/elasticsearch-reset-password -u elastic > password-elasticsearch.txt
     sudo chmod 777 password-elasticsearch.txt
+    echo ""
     echo "[Step 6] Install Elasticsearch Complete"
     echo ""
 	echo ""
