@@ -125,6 +125,7 @@ login_kibana(){
     #Add Encryption Key To Kibana
     echo "Restart Kibana (Please Wait)"
     sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
+    sudo cat conf/xpack >> /etc/kibana/kibana.yml
     sudo systemctl restart kibana.service
     read -p "Tunggu hingga bisa mengakses http://$(hostname -I):5601 (Press Anything To Continued....)"
     echo "[Step 8] Konfigurasi Kibana and Elastic Agent Complete"
@@ -138,7 +139,7 @@ install_fleet(){
     wget -O assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz https://artifacts.elastic.co/downloads/beats/elastic-agent/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz
     tar xzvf assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64.tar.gz -C assets
     yes | sudo ./assets/elastic-agent-${ELASTICSEARCH_VERSION}-linux-x86_64/elastic-agent install --fleet-server-es=https://localhost:9200 --fleet-server-service-token=$(curl -k -u "elastic:$(tail -1 password-elasticsearch.txt | cut -d " " -f 3)" -s -X POST http://localhost:5601/api/fleet/service-tokens --header 'kbn-xsrf: true' | jq -r .value) --fleet-server-policy=ca-security-endpoint --fleet-server-es-ca-trusted-fingerprint=$(sudo openssl x509 -fingerprint -sha256 -noout -in /etc/elasticsearch/certs/http_ca.crt | awk -F"=" {' print $2 '} | sed s/://g)
-    sudo cat conf/xpack >> /etc/kibana/kibana.yml
+    sudo cat conf/endpoint >> /etc/kibana/kibana.yml
     sudo systemctl restart kibana.service
     echo "[Step 9] Install Fleet Server Complete"
     echo ""

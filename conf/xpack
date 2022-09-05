@@ -28,7 +28,3 @@ xpack.fleet.agentPolicies:
         id: ca-egent
         package:
            name: elastic_agent
-      - name: CA Endpoint
-        id: ca-endpoint
-        package:
-           name: endpoint
