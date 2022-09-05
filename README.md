@@ -1,5 +1,5 @@
 ## Requirement
-Check to Network Administrator to Open Port 9200, 5601, 8220
+Check to Network Administrator to Open Port 9200, 5601, 8220, 80
 
 ## Pre-install
 sudo apt get update<br>
