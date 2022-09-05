@@ -71,6 +71,11 @@ install_fw_nginx() {
     yes | sudo ufw enable
     sudo systemctl enable nginx
     sudo systemctl start nginx
+    sudo apt-get install php8.1-fpm -y
+    sudo cp conf/default /etc/nginx/sites-available/default
+    sudo systemctl restart nginx
+    sudo ufw allow from any to any port 80
+    sudo chmod -R 777 /var/www/html
     echo "[Step 5] Install firewall and nginx Complete"
     echo ""
 	echo ""
@@ -121,6 +126,8 @@ login_kibana(){
     echo "Restart Kibana (Please Wait)"
     sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
     echo "[Step 8] Konfigurasi Kibana and Elastic Agent Complete"
+    echo ""
+	echo ""
 }
 
 install_fleet(){
@@ -132,15 +139,12 @@ install_fleet(){
     sudo cat conf/xpack >> /etc/kibana/kibana.yml
     sudo systemctl restart kibana.service
     echo "[Step 9] Install Fleet Server Complete"
+    echo ""
+	echo ""
 }
 
 setting_download_page(){
     echo "---Setting Agent Endpoint Download Page---"
-    sudo apt-get install php8.1-fpm -y
-    sudo cp conf/default /etc/nginx/sites-available/default
-    sudo systemctl restart nginx
-    sudo ufw allow from any to any port 80
-    sudo chmod -R 777 /var/www/html
     read -p "Buka halaman http://$(hostname -I):5601 (Mohon tunggu hingga halaman terbuka)"
     echo "Login dengan menggunakan username elastic dan password elastic berikut:"
     tail -3 password-elasticsearch.txt
