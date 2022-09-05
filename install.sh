@@ -125,6 +125,7 @@ login_kibana(){
     #Add Encryption Key To Kibana
     echo "Restart Kibana (Please Wait)"
     sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
+    sudo systemctl restart kibana.service
     echo "[Step 8] Konfigurasi Kibana and Elastic Agent Complete"
     echo ""
 	echo ""
