@@ -123,11 +123,14 @@ login_kibana(){
     sudo /usr/share/kibana/bin/kibana-verification-code
     read -p "Press Anything To Continued...."
     #Add Encryption Key To Kibana
-    echo "Restart Kibana (Please Wait)"
+    # echo "Restart Kibana (Please Wait)"
     sudo /usr/share/kibana/bin/kibana-encryption-keys generate | tail -4 >> /etc/kibana/kibana.yml
-    sudo cat conf/xpack >> /etc/kibana/kibana.yml
+    # sudo cat conf/xpack >> /etc/kibana/kibana.yml
     sudo systemctl restart kibana.service
     read -p "Tunggu hingga bisa mengakses http://$(hostname -I):5601 (Press Anything To Continued....)"
+    echo "Login dengan menggunakan username elastic dan password elastic berikut:"
+    tail -3 password-elasticsearch.txt
+    read -p "Press Anything To Continued...."
     echo "[Step 8] Konfigurasi Kibana and Elastic Agent Complete"
     echo ""
 	echo ""
@@ -172,8 +175,8 @@ main(){
     install_elasticsearch
     install_kibana
     login_kibana
-    install_fleet
-    setting_download_page
+    # install_fleet
+    # setting_download_page
     echo ""
 	echo ""
     echo "[-] Selesai Menginstall Agent-Manager dan Endpoint Security"
